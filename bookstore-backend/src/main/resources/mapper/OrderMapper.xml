@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookstore.mapper.OrderMapper">
+
+    <!-- 管理端：查询全部订单 -->
+    <select id="selectAll" resultType="com.bookstore.pojo.Order">
+        SELECT * FROM orders ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByUserId" resultType="com.bookstore.pojo.Order">
+        SELECT * FROM orders WHERE user_id = #{userId} ORDER BY create_time DESC
+    </select>
+
+    <select id="selectById" resultType="com.bookstore.pojo.Order">
+        SELECT * FROM orders WHERE order_id = #{orderId}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO orders (order_id, user_id, total_price, receiver_name, receiver_phone, receiver_address, order_status)
+        VALUES (#{orderId}, #{userId}, #{totalPrice}, #{receiverName}, #{receiverPhone}, #{receiverAddress}, #{orderStatus})
+    </insert>
+
+    <update id="updateStatus">
+        UPDATE orders SET order_status = #{orderStatus}
+        <if test="payTime != null">, pay_time = #{payTime}</if>
+        <if test="deliverTime != null">, deliver_time = #{deliverTime}</if>
+        <if test="receiveTime != null">, receive_time = #{receiveTime}</if>
+        <if test="cancelTime != null">, cancel_time = #{cancelTime}</if>
+        WHERE order_id = #{orderId}
+    </update>
+
+</mapper>

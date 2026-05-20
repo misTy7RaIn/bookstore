@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookstore.mapper.UserMapper">
+
+    <resultMap id="userMap" type="com.bookstore.pojo.User">
+        <id column="user_id" property="userId"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="email_verified" property="emailVerified"/>
+        <result column="role" property="role"/>
+        <result column="token" property="token"/>
+        <result column="raw_password" property="rawPassword"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="userMap">
+        SELECT * FROM user
+    </select>
+
+    <select id="selectById" resultMap="userMap">
+        SELECT * FROM user WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectByUsername" resultMap="userMap">
+        SELECT * FROM user WHERE username = #{username}
+    </select>
+
+    <select id="selectByEmail" resultMap="userMap">
+        SELECT * FROM user WHERE email = #{email}
+    </select>
+
+    <select id="selectByToken" resultMap="userMap">
+        SELECT * FROM user WHERE token = #{token}
+    </select>
+
+    <select id="selectByRole" resultMap="userMap">
+        SELECT * FROM user WHERE role = #{role}
+    </select>
+
+    <update id="updateToken">
+        UPDATE user SET token = #{token} WHERE user_id = #{userId}
+    </update>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO user (username, password, phone, email, email_verified, role, token, raw_password)
+        VALUES (#{username}, #{password}, #{phone}, #{email}, #{emailVerified}, #{role}, #{token}, #{rawPassword})
+    </insert>
+
+    <update id="update">
+        UPDATE user SET username=#{username}, password=#{password}, phone=#{phone}, email=#{email},
+        raw_password=#{rawPassword} WHERE user_id=#{userId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM user WHERE user_id = #{userId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookstore.mapper.CartMapper">
+
+    <select id="selectByUserId" resultType="com.bookstore.pojo.Cart">
+        SELECT * FROM cart WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectByUserAndBook" resultType="com.bookstore.pojo.Cart">
+        SELECT * FROM cart WHERE user_id = #{userId} AND book_id = #{bookId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="cartId">
+        INSERT INTO cart (user_id, book_id, quantity) VALUES (#{userId}, #{bookId}, #{quantity})
+    </insert>
+
+    <update id="updateQuantity">
+        UPDATE cart SET quantity = #{quantity} WHERE cart_id = #{cartId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM cart WHERE cart_id = #{cartId}
+    </delete>
+
+    <delete id="deleteByUserId">
+        DELETE FROM cart WHERE user_id = #{userId}
+    </delete>
+
+    <delete id="deleteByBookId">
+        DELETE FROM cart WHERE book_id = #{bookId}
+    </delete>
+
+</mapper>

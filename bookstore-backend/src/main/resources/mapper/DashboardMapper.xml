@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookstore.mapper.DashboardMapper">
+
+    <!-- 仪表盘统计数据 -->
+    <select id="selectStats" resultType="com.bookstore.pojo.DashboardStats">
+        SELECT
+            (SELECT COUNT(*) FROM book WHERE status = 1) AS bookCount,
+            (SELECT COUNT(*) FROM orders) AS orderCount,
+            (SELECT COUNT(*) FROM user) AS userCount,
+            (SELECT COALESCE(SUM(total_price), 0) FROM orders WHERE order_status IN (1, 2, 3)) AS totalSales
+    </select>
+
+    <!-- 各分类图书数量（父分类统计含子分类） -->
+    <select id="selectCategoryCount" resultType="java.util.HashMap">
+        SELECT pc.category_name AS name, COUNT(b.book_id) AS value
+        FROM category pc
+        LEFT JOIN category cc ON cc.parent_id = pc.category_id
+        LEFT JOIN book b ON b.category_id = cc.category_id AND b.status = 1
+        WHERE pc.parent_id = 0
+        GROUP BY pc.category_id, pc.category_name
+    </select>
+
+    <!-- 近7天订单数量 -->
+    <select id="selectDailyOrderCount" resultType="java.util.HashMap">
+        SELECT DATE_FORMAT(create_time, '%m-%d') AS date, COUNT(*) AS count
+        FROM orders
+        WHERE create_time >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+        GROUP BY DATE_FORMAT(create_time, '%Y-%m-%d'), DATE_FORMAT(create_time, '%m-%d')
+        ORDER BY DATE_FORMAT(create_time, '%Y-%m-%d')
+    </select>
+
+</mapper>
