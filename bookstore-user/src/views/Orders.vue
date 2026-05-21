@@ -28,6 +28,7 @@
         <button class="detail-btn" @click="openDetail(o.orderId)">查看详情</button>
         <button v-if="o.orderStatus === 1" class="cancel-btn" @click="handleCancel(o.orderId)">取消订单</button>
         <button v-if="o.orderStatus === 2" class="receive-btn" @click="handleReceive(o.orderId)">确认收货</button>
+        <button v-if="o.orderStatus === 3 || o.orderStatus === 4" class="delete-btn" @click="handleDelete(o.orderId)">删除</button>
       </div>
     </div>
 
@@ -106,12 +107,6 @@ async function openDetail(orderId) {
   }
 }
 
-async function handlePay(orderId) {
-  if (!confirm('确认支付？')) return
-  const res = await request.put(`/order/pay/${orderId}`)
-  if (res.code === 200) loadOrders()
-}
-
 async function handleCancel(orderId) {
   if (!confirm('确认取消该订单？')) return
   const res = await request.put(`/order/cancel/${orderId}`)
@@ -124,12 +119,18 @@ async function handleReceive(orderId) {
   if (res.code === 200) loadOrders()
 }
 
+async function handleDelete(orderId) {
+  if (!confirm('确认删除该订单？删除后不可恢复。')) return
+  const res = await request.delete(`/order/${orderId}`)
+  if (res.code === 200) loadOrders()
+}
+
 function statusLabel(s) {
-  return ['待支付', '待发货', '待收货', '已收货', '已取消'][s] || '未知'
+  return ['', '待发货', '待收货', '已收货', '已取消'][s] || '未知'
 }
 
 function statusClass(s) {
-  return ['tag-warn', 'tag-info', 'tag-primary', 'tag-ok', 'tag-cancel'][s] || ''
+  return ['', 'tag-info', 'tag-primary', 'tag-ok', 'tag-cancel'][s] || ''
 }
 
 function formatTime(t) {
@@ -170,6 +171,8 @@ onMounted(() => { loadOrders() })
 .receive-btn { padding: 6px 16px; background: #27ae60; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; }
 .cancel-btn { padding: 6px 16px; background: #f8f9fb; color: #e74c3c; border: 1px solid #e74c3c; border-radius: 8px; cursor: pointer; font-size: 13px; transition: all 0.2s; }
 .cancel-btn:hover { background: #fef0f0; }
+.delete-btn { padding: 6px 16px; background: #fff; color: #909399; border: 1px solid #dcdfe6; border-radius: 8px; cursor: pointer; font-size: 13px; transition: all 0.2s; }
+.delete-btn:hover { background: #fef0f0; color: #e74c3c; border-color: #e74c3c; }
 
 .tag-warn { color: #e67e22; font-weight: 600; }
 .tag-info { color: #3498db; font-weight: 600; }

@@ -32,7 +32,8 @@
           <td>
             <button class="detail-btn" @click="openDetail(o.orderId)">详情</button>
             <button v-if="o.orderStatus === 1" class="deliver-action-btn" @click="handleDeliver(o.orderId)">发货</button>
-            <button v-if="o.orderStatus === 0" class="cancel-action-btn" @click="handleCancel(o.orderId)">取消</button>
+            <button v-if="o.orderStatus === 1" class="cancel-action-btn" @click="handleCancel(o.orderId)">取消</button>
+            <button v-if="o.orderStatus === 3 || o.orderStatus === 4" class="delete-action-btn" @click="handleDelete(o.orderId)">删除</button>
           </td>
         </tr>
       </tbody>
@@ -81,7 +82,7 @@ import request from '@/utils/request'
 
 // 状态配置
 const statusTabs = [
-  { label: '全部', value: -1 }, { label: '待支付', value: 0 },
+  { label: '全部', value: -1 },
   { label: '待发货', value: 1 }, { label: '待收货', value: 2 },
   { label: '已收货', value: 3 }, { label: '已取消', value: 4 }
 ]
@@ -141,17 +142,27 @@ async function handleCancel(orderId) {
   else showMsg(res.message || '操作失败', 'err')
 }
 
+/**
+ * 删除订单
+ */
+async function handleDelete(orderId) {
+  if (!confirm('确认删除该订单？删除后不可恢复。')) return
+  const res = await request.delete(`/order/${orderId}`)
+  if (res.code === 200) { showMsg('已删除'); loadOrders() }
+  else showMsg(res.message || '操作失败', 'err')
+}
+
 function showMsg(text, type = 'ok') {
   msg.text = text; msg.type = type
   setTimeout(() => { msg.text = '' }, 3000)
 }
 
 function statusLabel(s) {
-  return ['待支付', '待发货', '待收货', '已收货', '已取消'][s] || '未知'
+  return ['', '待发货', '待收货', '已收货', '已取消'][s] || '未知'
 }
 
 function statusClass(s) {
-  return ['tag-warn', 'tag-info', 'tag-primary', 'tag-ok', 'tag-cancel'][s] || ''
+  return ['', 'tag-info', 'tag-primary', 'tag-ok', 'tag-cancel'][s] || ''
 }
 
 function formatTime(t) {
@@ -185,6 +196,7 @@ onMounted(() => { loadOrders() })
 .detail-btn { padding: 4px 12px; background: #409eff; color: #fff; border: none; border-radius: 4px; cursor: pointer; margin-right: 6px; }
 .deliver-action-btn { padding: 4px 12px; background: #67c23a; color: #fff; border: none; border-radius: 4px; cursor: pointer; margin-right: 6px; }
 .cancel-action-btn { padding: 4px 12px; background: #e6a23c; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+.delete-action-btn { padding: 4px 12px; background: #f56c6c; color: #fff; border: none; border-radius: 4px; cursor: pointer; margin-left: 6px; }
 
 .dialog-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 100; }
 .detail-dialog { width: 660px; max-height: 85vh; overflow: auto; background: #fff; border-radius: 8px; padding: 24px; }

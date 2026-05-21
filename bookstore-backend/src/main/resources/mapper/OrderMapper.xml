@@ -30,4 +30,9 @@
         WHERE order_id = #{orderId}
     </update>
 
+    <!-- 删除订单 -->
+    <delete id="deleteById">
+        DELETE FROM orders WHERE order_id = #{orderId}
+    </delete>
+
 </mapper>

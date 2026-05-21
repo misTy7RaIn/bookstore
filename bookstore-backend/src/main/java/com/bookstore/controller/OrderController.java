@@ -200,4 +200,21 @@ public class OrderController {
         orderService.cancel(orderId);
         return Result.success();
     }
+
+    /**
+     * 删除订单（仅已收货/已取消的终态订单可删）
+     */
+    @DeleteMapping("/{id}")
+    public Result<?> delete(@PathVariable("id") String orderId) {
+        Order order = orderService.detail(orderId);
+        if (order == null) {
+            return Result.error(404, "订单不存在");
+        }
+        Integer status = order.getOrderStatus();
+        if (status != 3 && status != 4) {
+            return Result.error(400, "仅已收货或已取消的订单可删除");
+        }
+        orderService.delete(orderId);
+        return Result.success();
+    }
 }

@@ -11,4 +11,5 @@ public interface OrderService {
     void deliver(String orderId);
     void receive(String orderId);
     void cancel(String orderId);
+    void delete(String orderId);
 }

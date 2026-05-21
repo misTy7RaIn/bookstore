@@ -11,4 +11,5 @@ public interface OrderMapper {
     Order selectById(String orderId);
     int insert(Order order);
     int updateStatus(Order order);
+    int deleteById(String orderId);
 }

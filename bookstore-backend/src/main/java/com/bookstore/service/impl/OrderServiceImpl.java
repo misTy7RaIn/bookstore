@@ -1,5 +1,6 @@
 package com.bookstore.service.impl;
 
+import com.bookstore.mapper.OrderItemMapper;
 import com.bookstore.mapper.OrderMapper;
 import com.bookstore.pojo.Order;
 import com.bookstore.service.OrderService;
@@ -16,9 +17,11 @@ import java.util.UUID;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderMapper orderMapper;
+    private final OrderItemMapper orderItemMapper;
 
-    public OrderServiceImpl(OrderMapper orderMapper) {
+    public OrderServiceImpl(OrderMapper orderMapper, OrderItemMapper orderItemMapper) {
         this.orderMapper = orderMapper;
+        this.orderItemMapper = orderItemMapper;
     }
 
     /**
@@ -49,7 +52,10 @@ public class OrderServiceImpl implements OrderService {
         if (order.getOrderId() == null || order.getOrderId().isEmpty()) {
             order.setOrderId(UUID.randomUUID().toString().replace("-", "").substring(0, 16));
         }
-        order.setOrderStatus(0);
+        // 若调用方已设置状态（如结算时直接设为待发货），则保留；否则默认待发货
+        if (order.getOrderStatus() == null) {
+            order.setOrderStatus(1);
+        }
         orderMapper.insert(order);
         return order.getOrderId();
     }
@@ -100,5 +106,14 @@ public class OrderServiceImpl implements OrderService {
         o.setOrderStatus(4);
         o.setCancelTime(LocalDateTime.now());
         orderMapper.updateStatus(o);
+    }
+
+    /**
+     * 删除订单（先删明细，再删主表）
+     */
+    @Override
+    public void delete(String orderId) {
+        orderItemMapper.deleteByOrderId(orderId);
+        orderMapper.deleteById(orderId);
     }
 }

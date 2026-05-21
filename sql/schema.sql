@@ -88,7 +88,7 @@ CREATE TABLE orders (
     receiver_name    VARCHAR(50)    NOT NULL                COMMENT '收货人姓名',
     receiver_phone   VARCHAR(20)    NOT NULL                COMMENT '收货人电话',
     receiver_address VARCHAR(255)   NOT NULL                COMMENT '收货地址',
-    order_status     TINYINT        NOT NULL DEFAULT 0      COMMENT '订单状态：0-待支付，1-已支付，2-已发货，3-已收货，4-已取消',
+    order_status     TINYINT        NOT NULL DEFAULT 1      COMMENT '订单状态：1-待发货，2-待收货，3-已收货，4-已取消',
     pay_time         DATETIME       DEFAULT NULL            COMMENT '支付时间',
     deliver_time     DATETIME       DEFAULT NULL            COMMENT '发货时间',
     receive_time     DATETIME       DEFAULT NULL            COMMENT '收货时间',

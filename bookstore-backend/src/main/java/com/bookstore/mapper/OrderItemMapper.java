@@ -12,4 +12,5 @@ public interface OrderItemMapper {
     List<OrderItem> selectByOrderId(String orderId);
     int insert(OrderItem item);
     int deleteByBookId(Integer bookId);
+    int deleteByOrderId(String orderId);
 }
