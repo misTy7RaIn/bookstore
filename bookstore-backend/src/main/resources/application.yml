@@ -4,8 +4,8 @@ server:
 # 阿里云 OSS 配置
 oss:
   endpoint: oss-cn-chengdu.aliyuncs.com
-  access-key-id: LTAI5tAdZcoUK3q47Px454ks
-  access-key-secret: fka3qwTW7Rm9I5NHQUsJwIicKebb39
+  access-key-id: youeraccess-key-id
+  access-key-secret: youeraccess-key-secret
   bucket-name: web-mybookstore
   base-url: https://web-mybookstore.oss-cn-chengdu.aliyuncs.com
 
@@ -19,8 +19,8 @@ spring:
   mail:
     host: smtp.qq.com
     port: 587
-    username: 1940794315@qq.com
-    password: dhqngfqtdmfpedcf
+    username: youerusername
+    password: youerpassword
     properties:
       mail:
         smtp:
